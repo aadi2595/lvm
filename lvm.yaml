@@ -1,0 +1,29 @@
+--- 
+    - hosts: machine1
+      become: true  
+      tasks:
+       - name: to create pv and vg
+         lvg:
+                vg: vg1s
+                pvs: /dev/sda
+       - name: to create lv
+         lvol:
+                vg: vg1s
+                lv: lv1
+                size: 5G
+                pvs: /dev/sda
+       - name: to give filesystem
+         filesystem:
+                fstype: ext4
+                dev: /dev/vg1s/lv1 
+       - name: to create dir
+         file:
+                state: directory
+                path: /home/aadi/lvm
+       - name: to mount
+         mount:
+                path: /home/aadi/lvm
+                src: /dev/vg1s/lv1
+                fstype: ext4
+                opts: rw
+                state: mounted
